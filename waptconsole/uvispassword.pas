@@ -16,7 +16,11 @@ type
     BitBtn1: TBitBtn;
     BitBtn2: TBitBtn;
     edPassword: TEdit;
+    edUser: TEdit;
+    edWaptServerName: TEdit;
+    Label1: TLabel;
     laPassword: TLabel;
+    laPassword1: TLabel;
     Panel1: TPanel;
     procedure edPasswordKeyPress(Sender: TObject; var Key: char);
   private
