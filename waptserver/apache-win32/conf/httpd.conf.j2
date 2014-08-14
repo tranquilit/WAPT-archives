@@ -1,4 +1,4 @@
-ServerRoot "C:/wapt/waptserver/apache-win32"
+ServerRoot "{{ apache_root_folder }}"
 Listen 80
 LoadModule actions_module modules/mod_actions.so
 LoadModule alias_module modules/mod_alias.so
@@ -30,14 +30,14 @@ Group daemon
 </IfModule>
 </IfModule>
 ServerAdmin admin@tranquilit.local
-DocumentRoot {{ wapt_repository_path }}
+DocumentRoot "{{ wapt_repository_path }}"
 <Directory />
     Options FollowSymLinks
     AllowOverride None
     Order deny,allow
     Deny from all
 </Directory>
-<Directory {{ wapt_repository_path }}>
+<Directory "{{ wapt_repository_path }}">
     Options Indexes FollowSymLinks
     AllowOverride None
     Order allow,deny
@@ -74,9 +74,8 @@ SSLRandomSeed connect builtin
 
 
 <VirtualHost *:80>
-	    ServerAdmin technique@tranquil-it-systems.fr
-       	ServerName {{ wapt_fqdn }}
-        DocumentRoot {{ wapt_repository_path }}
+
+        DocumentRoot "{{ wapt_repository_path }}"
 
         ProxyPass /wapt !
 		ProxyPass /wapt-host !
@@ -87,7 +86,7 @@ SSLRandomSeed connect builtin
         ProxyPass / http://localhost:8080/
         ProxyPassReverse / http://localhost:8080/
 
-        <Directory {{ wapt_repository_path }}>
+        <Directory "{{ wapt_repository_path }}">
 			Options Indexes FollowSymLinks MultiViews
             AllowOverride None
             Order allow,deny
