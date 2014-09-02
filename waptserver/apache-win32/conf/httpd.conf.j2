@@ -1,3 +1,4 @@
+{% if windows %}
 ServerRoot "{{ apache_root_folder }}"
 Listen 80
 LoadModule actions_module modules/mod_actions.so
@@ -67,19 +68,15 @@ DefaultType text/plain
     AddType application/x-compress .Z
     AddType application/x-gzip .gz .tgz
 </IfModule>
-<IfModule ssl_module>
-SSLRandomSeed startup builtin
-SSLRandomSeed connect builtin
-</IfModule>
-
+{% endif%}
 
 <VirtualHost *:80>
 
         DocumentRoot "{{ wapt_repository_path }}"
 
         ProxyPass /wapt !
-		ProxyPass /wapt-host !
-		ProxyPass /wapt-group !
+        ProxyPass /wapt-host !
+        ProxyPass /wapt-group !
         ProxyPass /download.php !
         ProxyPass /wapt/icons !
         ProxyPass /debian !
@@ -87,12 +84,54 @@ SSLRandomSeed connect builtin
         ProxyPassReverse / http://localhost:8080/
 
         <Directory "{{ wapt_repository_path }}">
-			Options Indexes FollowSymLinks MultiViews
+            Options Indexes FollowSymLinks MultiViews
             AllowOverride None
             Order allow,deny
                 allow from all
         </Directory>
+
+</VirtualHost>
+
+{% if ssl %}
+<IfModule ssl_module>
+
+{% if windows %}
+Listen 443
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+// Debian uses ssl-cert-snakeoil.pem here, so no need to provide a
+// default cert/key pair
+SSLCertificateFile "{{ wapt_ssl_cert_file }}"
+SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
+{% endif %}
+
+<VirtualHost _default_:443>
+
+        DocumentRoot "{{ wapt_repository_path }}"
+
+        ProxyPass /wapt !
+        ProxyPass /wapt-host !
+        ProxyPass /wapt-group !
+        ProxyPass /download.php !
+        ProxyPass /wapt/icons !
+        ProxyPass /debian !
+        ProxyPass / http://localhost:8080/
+        ProxyPassReverse / http://localhost:8080/
+
+        <Directory "{{ wapt_repository_path }}">
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride None
+            Order allow,deny
+                allow from all
+        </Directory>
+
+        SSLEngine on
+        SSLCertificateFile "{{ wapt_ssl_cert_file }}"
+        SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
+
 </VirtualHost>
 
 
 
+</IfModule>
+{% endif %}
