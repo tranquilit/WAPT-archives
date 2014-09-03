@@ -24,6 +24,9 @@ LoadModule setenvif_module     modules/mod_setenvif.so
 LoadModule proxy_module               modules/mod_proxy.so
 LoadModule proxy_http_module          modules/mod_proxy_http.so
 LoadModule rewrite_module             modules/mod_rewrite.so
+{% if ssl %}
+LoadModule ssl_module				  modules/mod_ssl.so
+{% endif %}
 <IfModule !mpm_netware_module>
 <IfModule !mpm_winnt_module>
 User daemon
@@ -99,8 +102,6 @@ DefaultType text/plain
 Listen 443
 SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
-// Debian uses ssl-cert-snakeoil.pem here, so no need to provide a
-// default cert/key pair
 SSLCertificateFile "{{ wapt_ssl_cert_file }}"
 SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 {% endif %}
