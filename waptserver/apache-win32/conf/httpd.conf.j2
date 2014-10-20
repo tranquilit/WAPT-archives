@@ -78,6 +78,7 @@ DefaultType text/plain
         DocumentRoot "{{ wapt_repository_path }}"
 
         ProxyPass /wapt !
+        ProxyPass /waptdev !
         ProxyPass /wapt-host !
         ProxyPass /wapt-group !
         ProxyPass /download.php !
@@ -111,6 +112,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         DocumentRoot "{{ wapt_repository_path }}"
 
         ProxyPass /wapt !
+        ProxyPass /waptdev !
         ProxyPass /wapt-host !
         ProxyPass /wapt-group !
         ProxyPass /download.php !
