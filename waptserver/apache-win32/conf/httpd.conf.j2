@@ -71,11 +71,17 @@ DefaultType text/plain
     AddType application/x-compress .Z
     AddType application/x-gzip .gz .tgz
 </IfModule>
-{% endif%}
+{% endif %}
 
 <VirtualHost *:80>
 
         DocumentRoot "{{ wapt_repository_path }}"
+
+{% if not windows %}
+        LogLevel warn
+        CustomLog /var/log/apache2/wapt.log combined
+        ErrorLog /var/log/apache2/wapt-error.log
+{% endif %}
 
         ProxyPass /wapt !
         ProxyPass /waptdev !
@@ -110,6 +116,12 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 <VirtualHost _default_:443>
 
         DocumentRoot "{{ wapt_repository_path }}"
+
+{% if not windows %}
+        LogLevel warn
+        CustomLog /var/log/apache2/wapt.log combined
+        ErrorLog /var/log/apache2/wapt-error.log
+{% endif %}
 
         ProxyPass /wapt !
         ProxyPass /waptdev !
