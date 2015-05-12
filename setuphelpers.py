@@ -2999,7 +2999,7 @@ def getproductprops(installer_path):
 
 
 
-def need_install(key,min_version=None):
+def need_install(key,min_version=None,force=False):
     """Return True if the software with key can be found in uninstall registry
         and the registred version is equal or greater than min_version
 
@@ -3010,7 +3010,7 @@ def need_install(key,min_version=None):
         boolean
 
     """
-    if ('WAPT' in globals() and  WAPT.options.force) or not key:
+    if force or not key:
         return True
     else:
         current = installed_softwares(uninstallkey=key)
@@ -3043,9 +3043,16 @@ def install_msi_if_needed(msi,min_version=None,killbefore=[]):
     if not isfile(msi):
         error('msi file %s not found in package' % msi)
     key = get_msi_properties(msi)['ProductCode']
+    # will try to add key in the caller's (setup.py) uninstallkey list
+    import inspect
+    caller_globals = inspect.stack()[1][0].f_globals
+    WAPT = caller_globals.get('WAPT',None)
+    force = WAPT and WAPT.force
+
     if not min_version:
         min_version = getproductprops(msi)['version']
-    if need_install(key,min_version=min_version):
+
+    if need_install(key,min_version=min_version,force=force):
         if killbefore:
             killalltasks(killbefore)
         run(r'msiexec /norestart /q /i "%s"' % msi)
@@ -3054,9 +3061,6 @@ def install_msi_if_needed(msi,min_version=None,killbefore=[]):
     else:
         print('MSI %s already installed. Skipping msiexec' % msi)
     if key:
-        # will try to add key in the caller's (setup.py) uninstallkey list
-        import inspect
-        caller_globals = inspect.stack()[1][0].f_globals
         if 'uninstallkey' in caller_globals and not key in caller_globals['uninstallkey']:
             caller_globals['uninstallkey'].append(key)
 
@@ -3089,7 +3093,13 @@ def install_exe_if_needed(exe,silentflags='',key=None,min_version=None,killbefor
         silentflags = getsilentflags(exe)
     if not min_version:
         min_version = getproductprops(exe)['version']
-    if need_install(key,min_version=min_version):
+
+    import inspect
+    caller_globals = inspect.stack()[1][0].f_globals
+    WAPT = caller_globals.get('WAPT',None)
+    force = WAPT and WAPT.force
+
+    if need_install(key,min_version=min_version,force=force):
         if killbefore:
             killalltasks(killbefore)
         run(r'"%s" %s' % (exe,silentflags))
@@ -3099,8 +3109,6 @@ def install_exe_if_needed(exe,silentflags='',key=None,min_version=None,killbefor
         print('Exe setup %s already installed. Skipping' % exe)
     if key:
         # will try to add key in the caller's (setup.py) uninstallkey list
-        import inspect
-        caller_globals = inspect.stack()[1][0].f_globals
         if 'uninstallkey' in caller_globals and not key in caller_globals['uninstallkey']:
             caller_globals['uninstallkey'].append(key)
 
