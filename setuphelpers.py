@@ -20,7 +20,7 @@
 #    along with WAPT.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 
 __all__ = \
 ['EWaptSetupException',
@@ -181,7 +181,18 @@ __all__ = \
  'windomainname',
  'winshell',
  'wmi_info',
- 'wmi_info_basic']
+ 'wmi_info_basic',
+ 'datetime2isodate',
+ 'httpdatetime2isodate',
+ 'isodate2datetime',
+ 'time2display',
+ 'hours_minutes',
+ 'fileisodate',
+ 'dateof',
+ 'ensure_list',
+ 'reg_enum_subkeys',
+ 'win_startup_info',
+ ]
 
 import os
 import sys
@@ -226,6 +237,7 @@ import types
 import re
 import threading
 import codecs
+import email.utils
 from waptpackage import PackageEntry
 from waptpackage import Version as Version
 from types import ModuleType
@@ -316,6 +328,21 @@ def ensure_unicode(data):
             return("Error in ensure_unicode / %s"%(repr(data)))
         else:
             raise
+
+
+def ensure_list(csv_or_list,ignore_empty_args=True):
+    """if argument is not a list, return a list from a csv string"""
+    if csv_or_list is None:
+        return []
+    if isinstance(csv_or_list,tuple):
+        return list(csv_or_list)
+    elif not isinstance(csv_or_list,list):
+        if ignore_empty_args:
+            return [s.strip() for s in csv_or_list.split(',') if s.strip() != '']
+        else:
+            return [s.strip() for s in csv_or_list.split(',')]
+    else:
+        return csv_or_list
 
 
 def create_shortcut(path, target='', arguments='', wDir='', icon=''):
@@ -514,7 +541,7 @@ def remove_user_desktop_shortcut(label):
         label += '.lnk'
     remove_file(os.path.join(desktop(0),label))
 
-def wgets(url,proxies=None):
+def wgets(url,proxies=None,verify_cert=False):
     """Return the content of a remote resource as a String with a http get request.
 
     Raise an exception if remote data can't be retrieved.
@@ -529,14 +556,20 @@ def wgets(url,proxies=None):
     >>> "msg" in data
     True
     """
-    r = requests.get(url,proxies=proxies,verify=False)
+    r = requests.get(url,proxies=proxies,verify=verify_cert)
     if r.ok:
         return r.text
     else:
         r.raise_for_status()
 
+def default_http_headers():
+    return {
+        'cache-control':'no-cache',
+        'pragma':'no-cache',
+        'user-agent':'wapt/{}'.format(__version__),
+        }
 
-def wget(url,target,printhook=None,proxies=None,connect_timeout=10,download_timeout=None):
+def wget(url,target,printhook=None,proxies=None,connect_timeout=10,download_timeout=None,verify_cert=False):
     r"""Copy the contents of a file from a given URL to a local file.
     >>> respath = wget('http://wapt.tranquil.it/wapt/tis-firefox_28.0.0-1_all.wapt','c:\\tmp\\test.wapt',proxies={'http':'http://proxy:3128'})
     ???
@@ -583,7 +616,7 @@ def wget(url,target,printhook=None,proxies=None,connect_timeout=10,download_time
     if not os.path.isdir(dir):
         os.makedirs(dir)
 
-    httpreq = requests.get(url,stream=True, proxies=proxies, timeout=connect_timeout,verify=False)
+    httpreq = requests.get(url,stream=True, proxies=proxies, timeout=connect_timeout,verify=verify_cert,http_headers = default_http_headers )
 
     total_bytes = int(httpreq.headers['content-length'])
     # 1Mb max, 1kb min
@@ -1360,6 +1393,44 @@ def reg_delvalue(key,name):
             return False
         else:
             raise
+
+
+def reg_enum_subkeys(rootkey):
+    os_encoding=locale.getpreferredencoding()
+    i = 0
+    while True:
+        try:
+            subkey_name = _winreg.EnumKey(rootkey, i).decode(os_encoding)
+            if subkey_name is not None:
+                yield subkey_name
+            i += 1
+        except WindowsError,e:
+            # WindowsError: [Errno 259] No more data is available
+            if e.winerror == 259:
+                break
+            else:
+                raise
+
+def reg_enum_values(rootkey):
+    os_encoding=locale.getpreferredencoding()
+    i = 0
+    while True:
+        try:
+            (name,value,_type) = _winreg.EnumValue(rootkey, i)
+            try:
+                name = name.decode(os_encoding)
+            except:
+                pass
+            if name is not None:
+                yield (name,value,_type)
+            i += 1
+        except WindowsError,e:
+            # WindowsError: [Errno 259] No more data is available
+            if e.winerror == 259:
+                break
+            else:
+                raise
+
 
 def registry_setstring(root,path,keyname,value,type=_winreg.REG_SZ):
     """Set the value of a string key in registry
@@ -2164,7 +2235,19 @@ def dmi_info():
     return result
 
 
-def wmi_info(keys=['Win32_ComputerSystem','Win32_ComputerSystemProduct','Win32_BIOS','Win32_NetworkAdapter']):
+def win_startup_info():
+    """Return the application started at boot or login"""
+    result = {'run':[],'common_startup':[]}
+    with reg_openkey_noredir(HKEY_LOCAL_MACHINE,makepath('Software','Microsoft','Windows','CurrentVersion','Run')) as run_key:
+        for (name,value,_type) in reg_enum_values(run_key):
+            result['run'].append({'name':name,'command':value})
+    for lnk in glob.glob(makepath(startup(1),'*.lnk')):
+        sc = winshell.shortcut(lnk)
+        result['common_startup'].append({'name':lnk,'command':'"%s" %s' % (sc.path,sc.arguments)})
+    return result
+
+
+def wmi_info(keys=['Win32_ComputerSystem','Win32_ComputerSystemProduct','Win32_BIOS','Win32_NetworkAdapter','Win32_Printer','Win32_VideoController']):
     """Get WMI machine informations as dictionaries
 
     """
@@ -2239,7 +2322,7 @@ def critical_system_pending_updates():
     return [ update.Title for update in searchResult.Updates if update.MsrcSeverity == 'Critical']
 
 def host_info():
-    """Read main workstation inforamtions, returned as a dict
+    """Read main workstation informations, returned as a dict
 
     Returns:
         dict: main properties of host, networking and windows system
@@ -2290,6 +2373,7 @@ def host_info():
     info['virtual_memory'] = memory_status().ullTotalVirtual
 
     info['current_user'] = get_loggedinusers()
+    info['windows_startup_items'] = win_startup_info()
     return info
 
 
@@ -3155,6 +3239,47 @@ def local_desktops():
             else:
                 raise
     return result
+
+def datetime2isodate(adatetime = None):
+    if not adatetime:
+        adatetime = datetime.datetime.now()
+    assert(isinstance(adatetime,datetime.datetime))
+    return adatetime.isoformat()
+
+
+def httpdatetime2isodate(httpdate):
+    """convert a date string as returned in http headers or mail headers to isodate
+    >>> import requests
+    >>> last_modified = requests.head('http://wapt/wapt/Packages',headers={'cache-control':'no-cache','pragma':'no-cache'}).headers['last-modified']
+    >>> len(httpdatetime2isodate(last_modified)) == 19
+    True
+    """
+    return datetime2isodate(datetime.datetime(*email.utils.parsedate(httpdate)[:6]))
+
+
+def isodate2datetime(isodatestr):
+    # we remove the microseconds part as it is not working for python2.5 strptime
+    return datetime.datetime.strptime(isodatestr.split('.')[0] , "%Y-%m-%dT%H:%M:%S")
+
+
+def time2display(adatetime):
+    return adatetime.strftime("%Y-%m-%d %H:%M")
+
+
+def hours_minutes(hours):
+    if hours is None:
+        return None
+    else:
+        return "%02i:%02i" % ( int(hours) , int((hours - int(hours)) * 60.0))
+
+
+def fileisodate(filename):
+    return datetime.datetime.fromtimestamp(os.stat(filename).st_mtime).isoformat()
+
+
+def dateof(adatetime):
+    return adatetime.replace(hour=0,minute=0,second=0,microsecond=0)
+
 
 
 class EWaptSetupException(Exception):
