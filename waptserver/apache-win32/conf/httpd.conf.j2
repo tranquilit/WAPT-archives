@@ -79,8 +79,14 @@ DefaultType text/plain
 
 {% if not windows %}
         LogLevel warn
+
+        {% if debian %}
         CustomLog /var/log/apache2/wapt.log combined
         ErrorLog /var/log/apache2/wapt-error.log
+        {% else %}
+        CustomLog /var/log/httpd/wapt.log combined
+        ErrorLog /var/log/httpd/wapt-error.log
+        {% endif %}
 {% endif %}
 
         ProxyPass /wapt !
@@ -110,7 +116,15 @@ DefaultType text/plain
 </VirtualHost>
 
 {% if ssl %}
-<IfModule ssl_module>
+
+
+
+{% if redhat %}
+Listen 443 https
+<IfModule mod_ssl.c>
+{% else %}
+    <IfModule ssl_module>
+{% endif %}
 
 {% if windows %}
 Listen 443
@@ -125,9 +139,14 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         DocumentRoot "{{ wapt_repository_path }}"
 
 {% if not windows %}
-        LogLevel warn
+    LogLevel warn
+    {% if debian %}
         CustomLog /var/log/apache2/wapt.log combined
         ErrorLog /var/log/apache2/wapt-error.log
+    {% else %}
+        CustomLog /var/log/httpd/wapt.log combined
+        ErrorLog /var/log/httpd/wapt-error.log
+    {% endif %}
 {% endif %}
 
         ProxyPass /wapt !
