@@ -25,7 +25,7 @@ unit waptcommon;
 interface
   uses
      Classes, SysUtils, Windows,
-     DB,sqldb,sqlite3conn,SuperObject,syncobjs,IdComponent,tiscommon,tisstrings, DefaultTranslator;
+     DB,sqldb,sqlite3conn,SuperObject,syncobjs,IdComponent,tiscommon,tisstrings, tislogging, DefaultTranslator;
 
   type
       TProgressCallback=function(Receiver:TObject;current,total:Integer):Boolean of object;

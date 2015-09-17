@@ -24,7 +24,7 @@
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="2"/>
       <RevisionNr Value="3"/>
-      <BuildNr Value="2"/>
+      <BuildNr Value="4"/>
       <StringTable CompanyName="Tranquil IT Systems" ProductName="WAPT Installation" ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1" Active="Default">
@@ -66,11 +66,10 @@
         <Filename Value="waptget.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="waptget"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="19"/>
-        <CursorPos X="107" Y="37"/>
+        <CursorPos X="95" Y="36"/>
         <UsageCount Value="222"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -79,10 +78,13 @@
         <Filename Value="waptcommon.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="waptcommon"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="4"/>
-        <CursorPos X="82" Y="28"/>
+        <TopLine Value="37"/>
+        <CursorPos X="72" Y="28"/>
         <UsageCount Value="207"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
@@ -250,10 +252,12 @@
       </Unit21>
       <Unit22>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\objpas\sysutils\osutilsh.inc"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="29"/>
-        <CursorPos X="20" Y="44"/>
+        <TopLine Value="28"/>
+        <CursorPos X="10" Y="41"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\objpas\sysutils\osutil.inc"/>
@@ -621,7 +625,7 @@
         <UsageCount Value="11"/>
       </Unit68>
     </Units>
-    <JumpHistory Count="6" HistoryIndex="5">
+    <JumpHistory Count="15" HistoryIndex="14">
       <Position1>
         <Filename Value="waptget.lpr"/>
         <Caret Line="32" Column="1" TopLine="31"/>
@@ -646,6 +650,42 @@
         <Filename Value="waptget.lpr"/>
         <Caret Line="34" Column="28" TopLine="16"/>
       </Position6>
+      <Position7>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="28" Column="82" TopLine="4"/>
+      </Position7>
+      <Position8>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="914" Column="58" TopLine="902"/>
+      </Position8>
+      <Position9>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="915" Column="22" TopLine="903"/>
+      </Position9>
+      <Position10>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="219" Column="1" TopLine="218"/>
+      </Position10>
+      <Position11>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="915" Column="11" TopLine="895"/>
+      </Position11>
+      <Position12>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="28" Column="93" TopLine="14"/>
+      </Position12>
+      <Position13>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="1072" Column="54" TopLine="1059"/>
+      </Position13>
+      <Position14>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="28" Column="103" TopLine="14"/>
+      </Position14>
+      <Position15>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="1072" Column="54" TopLine="1059"/>
+      </Position15>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
