@@ -2,7 +2,7 @@ program waptdeploy;
 {$mode delphiunicode}
 
 uses classes, windows, SysUtils, wininet, superobject, shellapi,
-  tishttp, uwaptdeployres, DCPsha256,winsock2,jwawindns,synautil,
+  tiswinhttp, uwaptdeployres, DCPsha256,winsock2,jwawindns,synautil,
   IniFiles;
 
 
