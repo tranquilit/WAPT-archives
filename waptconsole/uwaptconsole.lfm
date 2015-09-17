@@ -3253,6 +3253,11 @@ object VisWaptGUI: TVisWaptGUI
       OnExecute = ActAddADSGroupsExecute
       OnUpdate = ActHostsActionsUpdate
     end
+    object ActTriggerWakeOnLan: TAction
+      Category = 'hosts'
+      Caption = 'TRigger WakeOnLan'
+      OnExecute = ActTriggerWakeOnLanExecute
+    end
   end
   object PopupMenuPackages: TPopupMenu
     left = 148
@@ -3970,6 +3975,9 @@ object VisWaptGUI: TVisWaptGUI
         D6FFCED4D6FFCED4D6FFCDD4D6FFCDD3D5FFCDD3D5FFCAD2D4FFCAD2D3FFC9D1
         D3FFC8D1D2FFC7D0D1FFC6CFD1FFCED5D7FFF0FBFFFFF0FBFFFF
       }
+    end
+    object MenuItem58: TMenuItem
+      Action = ActTriggerWakeOnLan
     end
     object MenuItem55: TMenuItem
       Caption = '-'

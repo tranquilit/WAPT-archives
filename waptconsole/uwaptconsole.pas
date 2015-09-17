@@ -18,6 +18,7 @@ type
 
   TVisWaptGUI = class(TForm)
     ActCancelRunningTask: TAction;
+    ActCreateWaptSetupPy: TAction;
     ActForgetPackages: TAction;
     ActAddConflicts: TAction;
     ActHelp: TAction;
@@ -29,6 +30,7 @@ type
     ActCleanCache: TAction;
     ActAddADSGroups: TAction;
     ActHostsDeleteHostPackage: TAction;
+    ActTriggerWakeOnLan: TAction;
     ActPackageInstall: TAction;
     ActRestoreDefaultLayout: TAction;
     ActTriggerHostUpdate: TAction;
@@ -146,6 +148,7 @@ type
     MenuItem55: TMenuItem;
     MenuItem56: TMenuItem;
     MenuItem57: TMenuItem;
+    MenuItem58: TMenuItem;
     OpenDialogWapt: TOpenDialog;
     PageControl1: TPageControl;
     Panel11: TPanel;
@@ -311,6 +314,7 @@ type
     procedure ActPackagesUpdateExecute(Sender: TObject);
     procedure ActReloadConfigExecute(Sender: TObject);
     procedure ActTriggerHostsListeningExecute(Sender: TObject);
+    procedure ActTriggerWakeOnLanExecute(Sender: TObject);
     procedure ActVNCExecute(Sender: TObject);
     procedure ActVNCUpdate(Sender: TObject);
     procedure ActWAPTLocalConfigExecute(Sender: TObject);
@@ -2082,6 +2086,21 @@ begin
       ShowMessageFmt('Unable to trigger discovery of listening IP on wapt server: %s',[UTF8Encode(E.Message)]);
   end;
 
+end;
+
+procedure TVisWaptGUI.ActTriggerWakeOnLanExecute(Sender: TObject);
+begin
+  with TVisHostsUpgrade.Create(Self) do
+    try
+      Caption:= 'Start with wakeonlan';
+      action := 'api/v2/trigger_wakeonlan';
+      hosts := Gridhosts.SelectedRows;
+
+      if ShowModal = mrOk then
+        actRefresh.Execute;
+    finally
+      Free;
+    end;
 end;
 
 procedure TVisWaptGUI.ActVNCExecute(Sender: TObject);
