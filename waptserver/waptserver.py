@@ -67,6 +67,9 @@ import pefile
 
 import itsdangerous
 
+import wakeonlan.wol
+
+
 # i18n
 from flask.ext.babel import Babel
 try:
@@ -1698,6 +1701,28 @@ def usage_statictics():
     result.update(stats['result'][0])
     return make_response(msg = _('Anomnymous usage statistics'), result = result)
 
+
+@app.route('/api/v2/trigger_wakeonlan')
+@requires_auth
+def trigger_wakeonlan():
+    try:
+        uuid = request.args['uuid']
+        host_data = hosts().find_one({ "uuid": uuid},fields={'uuid':1,'host':1,'computer_fqdn':1})
+
+        macs = host_data['host']['mac']
+        msg = u''
+        if macs:
+            logger.info(_("Sending magic wakeonlan packets to {} for machine {}").format(macs,host_data['host']['computer_fqdn']))
+            wakeonlan.wol.send_magic_packet(*macs)
+            msg = _(u"Wakeonlan packets sent to {} for machine {}").format(macs,host_data['host']['computer_fqdn'])
+            result = dict(macs=macs,host=host_data['host']['computer_fqdn'],uuid=uuid)
+        else:
+            raise EWaptMissingHostData(_("No MAC address found for this host in database"))
+        return make_response(result,
+            msg = msg,
+            success = True)
+    except Exception, e:
+        return make_response_from_exception(e)
 
 def test():
     import flask
