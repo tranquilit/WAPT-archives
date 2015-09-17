@@ -20,7 +20,7 @@
 #    along with WAPT.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------
-__version__="1.2.3"
+__version__="1.2.4"
 
 import os,sys
 try:
@@ -768,9 +768,9 @@ def install_wapt(computer_name,authentication_file):
     return subprocess.check_output(cmd,shell=True)
 
 
-@app.route('/deploy_wapt',methods=['POST'])
+@app.route('/api/v2/remote_deploy_wapt',methods=['POST'])
 @requires_auth
-def deploy_wapt():
+def remote_deploy_wapt():
     try:
         result = {}
         if platform.system() != 'Linux':
