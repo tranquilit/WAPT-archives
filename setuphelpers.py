@@ -20,7 +20,7 @@
 #    along with WAPT.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------
-__version__ = "1.3.0"
+__version__ = "1.3.2"
 
 __all__ = \
 ['EWaptSetupException',
@@ -1590,7 +1590,7 @@ def inifile_writestring(inifilename,section,key,value):
 
 
 class disable_file_system_redirection:
-    r"""Context manager to diable temporarily the wow3264 file redirector
+    r"""Context manager to disable temporarily the wow3264 file redirector
 
     >>> with disable_file_system_redirection():
     ...     winshell.get_path(shellcon.CSIDL_PROGRAM_FILES)
@@ -3149,6 +3149,9 @@ def install_msi_if_needed(msi,min_version=None,killbefore=[],accept_returncodes=
                             if not provided, guess it from exe setup file properties.
         kill_before (list of str) : processes to kill before setup, to avoid file locks
                                     issues.
+        accept_returncodes (list of int) : return codes which are acceptable and don't raise exception
+        timeout int) : maximum run time of command in seconds bfore the child is killed and error is raised.
+        properties (dict) : map (key=value) of properties for specific msi installation.
 
     Returns:
         None
