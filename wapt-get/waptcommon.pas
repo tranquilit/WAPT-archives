@@ -205,7 +205,7 @@ implementation
 uses FileUtil, soutils, Variants, ShellApi, JwaIpHlpApi,
   JwaIpTypes, NetworkAdapterInfo, tisinifiles, registry, JwaWinDNS, JwaWinsock2,
   IdHttp,IdSSLOpenSSL,IdMultipartFormData,IdExceptionCore,IdException,Dialogs,UnitRedirect, IdURI,
-  uwaptres,gettext,IdStack;
+  uwaptres,gettext,IdStack,sodbutils;
 
 function IPV4ToString(ipv4:LongWord):String;
 begin
@@ -1069,7 +1069,7 @@ end;
 
 function AppIniFilename: Utf8String;
 begin
-  result := GetAppConfigDir(False)+GetApplicationName+'.ini';
+  result := GetAppConfigDir(False)+ApplicationName+'.ini';
 end;
 
 function WaptIniFilename: Utf8String;

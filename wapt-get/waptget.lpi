@@ -66,10 +66,11 @@
         <Filename Value="waptget.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="waptget"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="19"/>
-        <CursorPos X="95" Y="36"/>
+        <TopLine Value="14"/>
+        <CursorPos X="31" Y="34"/>
         <UsageCount Value="222"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -78,11 +79,10 @@
         <Filename Value="waptcommon.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="waptcommon"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="37"/>
-        <CursorPos X="72" Y="28"/>
+        <TopLine Value="191"/>
+        <CursorPos X="37" Y="208"/>
         <UsageCount Value="207"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
@@ -625,7 +625,7 @@
         <UsageCount Value="11"/>
       </Unit68>
     </Units>
-    <JumpHistory Count="15" HistoryIndex="14">
+    <JumpHistory Count="20" HistoryIndex="19">
       <Position1>
         <Filename Value="waptget.lpr"/>
         <Caret Line="32" Column="1" TopLine="31"/>
@@ -686,6 +686,26 @@
         <Filename Value="waptcommon.pas"/>
         <Caret Line="1072" Column="54" TopLine="1059"/>
       </Position15>
+      <Position16>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="28" Column="72" TopLine="37"/>
+      </Position16>
+      <Position17>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="1072" Column="36" TopLine="1059"/>
+      </Position17>
+      <Position18>
+        <Filename Value="waptcommon.pas"/>
+        <Caret Line="1205" Column="20" TopLine="1194"/>
+      </Position18>
+      <Position19>
+        <Filename Value="waptget.lpr"/>
+        <Caret Line="36" Column="95" TopLine="19"/>
+      </Position19>
+      <Position20>
+        <Filename Value="waptget.lpr"/>
+        <Caret Line="118" Column="9" TopLine="105"/>
+      </Position20>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
