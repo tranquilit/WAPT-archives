@@ -97,8 +97,8 @@ DefaultType text/plain
         ProxyPass /wapt/icons !
         ProxyPass /debian !
 		ProxyPass /waptwua !
-        ProxyPass / http://localhost:8080/
-        ProxyPassReverse / http://localhost:8080/
+        ProxyPass / http://127.0.0.1:8080/
+        ProxyPassReverse / http://127.0.0.1:8080/
 
         <Directory "{{ wapt_repository_path }}">
             Options Indexes FollowSymLinks MultiViews
@@ -157,8 +157,8 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         ProxyPass /download.php !
         ProxyPass /wapt/icons !
         ProxyPass /debian !
-        ProxyPass / http://localhost:8080/
-        ProxyPassReverse / http://localhost:8080/
+        ProxyPass / http://127.0.0.1:8080/
+        ProxyPassReverse / http://127.0.0.1:8080/
 
         <Directory "{{ wapt_repository_path }}">
             Options Indexes FollowSymLinks MultiViews
