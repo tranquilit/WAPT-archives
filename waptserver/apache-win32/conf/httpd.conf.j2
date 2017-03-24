@@ -73,21 +73,33 @@ DefaultType text/plain
 </IfModule>
 {% endif %}
 
+
+
+{% if strict_https %}
+<VirtualHost *:80>
+   ServerName {{ fqdn }}
+   DocumentRoot "{{ wapt_repository_path }}"
+   Redirect permanent / https://{{fqdn}}/
+</VirtualHost>
+
+{% else %} 
+
 <VirtualHost *:80>
 
         DocumentRoot "{{ wapt_repository_path }}"
 
-{% if not windows %}
+   {% if not windows %}
         LogLevel warn
 
-        {% if debian %}
+      {% if debian %}
         CustomLog /var/log/apache2/wapt.log combined
         ErrorLog /var/log/apache2/wapt-error.log
-        {% else %}
+      {% else %}
         CustomLog /var/log/httpd/wapt.log combined
         ErrorLog /var/log/httpd/wapt-error.log
-        {% endif %}
-{% endif %}
+      {% endif %}
+
+   {% endif %}
 
         ProxyPass /wapt !
         ProxyPass /waptdev !
@@ -96,7 +108,7 @@ DefaultType text/plain
         ProxyPass /download.php !
         ProxyPass /wapt/icons !
         ProxyPass /debian !
-		ProxyPass /waptwua !
+	ProxyPass /waptwua !
         ProxyPass / http://127.0.0.1:8080/
         ProxyPassReverse / http://127.0.0.1:8080/
 
@@ -116,31 +128,36 @@ DefaultType text/plain
 
 </VirtualHost>
 
-{% if ssl %}
+{% endif %} {# if strict_https #}
 
-
-
-{% if redhat %}
+ {% if redhat %}
 Listen 443 https
 <IfModule mod_ssl.c>
-{% else %}
+ {% else %}
     <IfModule ssl_module>
-{% endif %}
+ {% endif %}
 
-{% if windows %}
+ {% if windows %}
 Listen 443
 SSLRandomSeed startup builtin
 SSLRandomSeed connect builtin
 SSLCertificateFile "{{ wapt_ssl_cert_file }}"
 SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
+ {% endif %}
+
+{% if strict_https %}
+<VirtualHost {{fqdn}}:443>
+{% else %}
+<VirtualHost _default_:443>
 {% endif %}
 
-<VirtualHost _default_:443>
-
         DocumentRoot "{{ wapt_repository_path }}"
+	
+        SSLCiphersuite ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:AES256-GCM-SHA384:AES256-SHA256:AES256-SHA
+        SSLHonorCipherOrder on
 
 {% if not windows %}
-    LogLevel warn
+        LogLevel warn
     {% if debian %}
         CustomLog /var/log/apache2/wapt.log combined
         ErrorLog /var/log/apache2/wapt-error.log
@@ -165,23 +182,36 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
             Options Indexes FollowSymLinks MultiViews
             AllowOverride None
             Order allow,deny
-                allow from all
+            Allow from all
         </Directory>
 
         <Directory "{{ wapt_repository_path }}/wapt-host">
             Options -Indexes
             AllowOverride None
             Order allow,deny
-                allow from all
+            Allow from all
         </Directory>
 
         SSLEngine on
         SSLCertificateFile "{{ wapt_ssl_cert_file }}"
         SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 
+        <Location "/add_host">
+            AuthType Kerberos
+            AuthName "Kerberos auth required for WAPT host registration"
+            KrbMethodNegotiate On
+            KrbMethodK5Passwd On
+            KrbAuthRealms {{KRB5_REALM}}
+            KrbLocalUserMapping On
+            KrbServiceName HTTP/{{fqdn}}@{{KRB5_REALM}}
+            Krb5KeyTab /etc/apache2/http-krb5.keytab
+            require valid-user
+            Order Allow,Deny
+            Allow from all
+            ProxyPass  http://127.0.0.1:8080/add_host
+            ProxyPassReverse  http://127.0.0.1:8080/add_host
+        </Location>
+
+
+
 </VirtualHost>
-
-
-
-</IfModule>
-{% endif %}
