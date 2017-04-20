@@ -195,6 +195,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         SSLEngine on
         SSLCertificateFile "{{ wapt_ssl_cert_file }}"
         SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
+{% if use_kerberos %}
 
         <Location "/add_host">
             AuthType Kerberos
@@ -211,7 +212,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
             ProxyPass  http://127.0.0.1:8080/add_host
             ProxyPassReverse  http://127.0.0.1:8080/add_host
         </Location>
-
+{% endif %}
 
 
 </VirtualHost>
