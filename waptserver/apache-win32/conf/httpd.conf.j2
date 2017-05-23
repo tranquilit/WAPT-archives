@@ -107,8 +107,16 @@ DefaultType text/plain
         ProxyPass /wapt/icons !
         ProxyPass /debian !
         ProxyPass /waptwua !
-        ProxyPass / http://127.0.0.1:8080/
-        ProxyPassReverse / http://127.0.0.1:8080/
+
+        RewriteCond %{QUERY_STRING} transport=polling
+        RewriteRule /(.*)$ http://127.0.0.1:8080/$1 [P] retry=0
+
+        ProxyRequests off
+        ProxyPass /socket.io/ ws://127.0.0.1:8080/socket.io/ retry=0
+        ProxyPassReverse /socket.io/ ws://127.0.0.1:8080/socket.io/ retry=0
+
+        ProxyPass / http://127.0.0.1:8080/ retry=0
+        ProxyPassReverse / http://127.0.0.1:8080/ retry=0
 
         <Directory "{{ wapt_repository_path }}">
             Options Indexes FollowSymLinks MultiViews
@@ -173,8 +181,16 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         ProxyPass /download.php !
         ProxyPass /wapt/icons !
         ProxyPass /debian !
-        ProxyPass / http://127.0.0.1:8080/
-        ProxyPassReverse / http://127.0.0.1:8080/
+
+        RewriteCond %{QUERY_STRING} transport=polling
+        RewriteRule /(.*)$ http://127.0.0.1:8080/$1 [P] retry=0
+
+        ProxyRequests off
+        ProxyPass /socket.io/ ws://127.0.0.1:8080/socket.io/ retry=0
+        ProxyPassReverse /socket.io/ ws://127.0.0.1:8080/socket.io/ retry=0
+
+        ProxyPass / http://127.0.0.1:8080/ retry=0
+        ProxyPassReverse / http://127.0.0.1:8080/ retry=0
 
         <Directory "{{ wapt_repository_path }}">
             Options Indexes FollowSymLinks MultiViews
