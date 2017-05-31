@@ -1,31 +1,31 @@
 {% if windows %}
 ServerRoot "{{ apache_root_folder }}"
 Listen 80
-LoadModule actions_module modules/mod_actions.so
-LoadModule alias_module modules/mod_alias.so
-LoadModule asis_module modules/mod_asis.so
-LoadModule auth_basic_module modules/mod_auth_basic.so
+LoadModule actions_module       modules/mod_actions.so
+LoadModule alias_module         modules/mod_alias.so
+LoadModule asis_module          modules/mod_asis.so
+LoadModule auth_basic_module    modules/mod_auth_basic.so
 LoadModule authn_default_module modules/mod_authn_default.so
-LoadModule authn_file_module modules/mod_authn_file.so
+LoadModule authn_file_module    modules/mod_authn_file.so
 LoadModule authz_default_module modules/mod_authz_default.so
 LoadModule authz_groupfile_module modules/mod_authz_groupfile.so
-LoadModule authz_host_module modules/mod_authz_host.so
-LoadModule authz_user_module modules/mod_authz_user.so
-LoadModule autoindex_module modules/mod_autoindex.so
-LoadModule cgi_module modules/mod_cgi.so
-LoadModule dir_module modules/mod_dir.so
-LoadModule env_module modules/mod_env.so
-LoadModule include_module modules/mod_include.so
-LoadModule isapi_module modules/mod_isapi.so
-LoadModule log_config_module modules/mod_log_config.so
-LoadModule mime_module modules/mod_mime.so
+LoadModule authz_host_module   modules/mod_authz_host.so
+LoadModule authz_user_module   modules/mod_authz_user.so
+LoadModule autoindex_module    modules/mod_autoindex.so
+LoadModule cgi_module          modules/mod_cgi.so
+LoadModule dir_module          modules/mod_dir.so
+LoadModule env_module          modules/mod_env.so
+LoadModule include_module      modules/mod_include.so
+LoadModule isapi_module        modules/mod_isapi.so
+LoadModule log_config_module   modules/mod_log_config.so
+LoadModule mime_module         modules/mod_mime.so
 LoadModule negotiation_module  modules/mod_negotiation.so
 LoadModule setenvif_module     modules/mod_setenvif.so
-LoadModule proxy_module               modules/mod_proxy.so
-LoadModule proxy_http_module          modules/mod_proxy_http.so
-LoadModule rewrite_module             modules/mod_rewrite.so
+LoadModule proxy_module        modules/mod_proxy.so
+LoadModule proxy_http_module   modules/mod_proxy_http.so
+LoadModule rewrite_module      modules/mod_rewrite.so
 {% if ssl %}
-LoadModule ssl_module				  modules/mod_ssl.so
+LoadModule ssl_module          modules/mod_ssl.so
 {% endif %}
 <IfModule !mpm_netware_module>
 <IfModule !mpm_winnt_module>
@@ -73,8 +73,6 @@ DefaultType text/plain
 </IfModule>
 {% endif %}
 
-
-
 {% if strict_https %}
 <VirtualHost *:80>
    ServerName {{ fqdn }}
@@ -108,7 +106,7 @@ DefaultType text/plain
         ProxyPass /download.php !
         ProxyPass /wapt/icons !
         ProxyPass /debian !
-	ProxyPass /waptwua !
+        ProxyPass /waptwua !
         ProxyPass / http://127.0.0.1:8080/
         ProxyPassReverse / http://127.0.0.1:8080/
 
@@ -152,7 +150,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 {% endif %}
 
         DocumentRoot "{{ wapt_repository_path }}"
-	
+
         SSLCiphersuite ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:AES256-GCM-SHA384:AES256-SHA256:AES256-SHA
         SSLHonorCipherOrder on
 
@@ -197,7 +195,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 {% if use_kerberos %}
 
-        <Location "/add_host">
+        <Location "/add_host" "/register">
             AuthType Kerberos
             AuthName "Kerberos auth required for WAPT host registration"
             KrbMethodNegotiate On
@@ -213,6 +211,4 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
             ProxyPassReverse  http://127.0.0.1:8080/add_host
         </Location>
 {% endif %}
-
-
 </VirtualHost>
