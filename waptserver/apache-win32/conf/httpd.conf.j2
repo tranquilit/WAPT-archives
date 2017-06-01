@@ -73,7 +73,7 @@ DefaultType text/plain
 </IfModule>
 {% endif %}
 
-{% if strict_https %}
+{% if force_https %}
 <VirtualHost *:80>
    ServerName {{ fqdn }}
    DocumentRoot "{{ wapt_repository_path }}"
@@ -134,7 +134,7 @@ DefaultType text/plain
 
 </VirtualHost>
 
-{% endif %} {# if strict_https #}
+{% endif %} {# if force_https #}
 
  {% if redhat %}
 Listen 443 https
@@ -210,8 +210,7 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         SSLCertificateFile "{{ wapt_ssl_cert_file }}"
         SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 {% if use_kerberos %}
-
-        <Location "/add_host" "/register">
+        <LocationMatch  "/(add_host|register)/*">
             AuthType Kerberos
             AuthName "Kerberos auth required for WAPT host registration"
             KrbMethodNegotiate On
@@ -225,6 +224,8 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
             Allow from all
             ProxyPass  http://127.0.0.1:8080/add_host
             ProxyPassReverse  http://127.0.0.1:8080/add_host
-        </Location>
+        </LocationMatch>
+
+
 {% endif %}
 </VirtualHost>
