@@ -210,16 +210,16 @@ SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
         SSLCertificateFile "{{ wapt_ssl_cert_file }}"
         SSLCertificateKeyFile "{{ wapt_ssl_key_file }}"
 {% if use_kerberos %}
-        <LocationMatch  "/(add_host|register)/*">
+        <LocationMatch  "/(add_host|register)">
             AuthType Kerberos
             AuthName "Kerberos auth required for WAPT host registration"
             KrbMethodNegotiate On
             KrbMethodK5Passwd On
-            KrbAuthRealms {{KRB5_REALM}}
-            KrbLocalUserMapping On
             KrbServiceName HTTP/{{fqdn}}@{{KRB5_REALM}}
             Krb5KeyTab /etc/apache2/http-krb5.keytab
             require valid-user
+            RequestHeader set X-Authenticated-User expr=%{REMOTE_USER}
+
             Order Allow,Deny
             Allow from all
             ProxyPass  http://127.0.0.1:8080/add_host
