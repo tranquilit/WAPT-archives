@@ -20,7 +20,7 @@
 #    along with WAPT.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------
-__version__ = "1.4.3.2"
+__version__ = "1.4.3.4"
 
 import os
 import re
@@ -2999,7 +2999,6 @@ class Wapt(object):
                 try:
                     subject = ssl_verify_content(manifest_data,signature,public_certs)
                     logger.info(u'Package issued by %s' % (subject,))
-                    return subject
                 except:
                     raise EWaptBadSignature(u'Package file %s signature is invalid.\n\nThe signer "%s" is not accepted by one the following public keys:\n%s' % \
                         (packagetempdir,pe.signer,'\n'.join(self.public_certs)))
@@ -3009,6 +3008,7 @@ class Wapt(object):
                 errors = self.corrupted_files_sha1(packagetempdir,manifest)
                 if errors:
                     raise EWaptCorruptedFiles(u'Error in package %s, files corrupted, SHA1 not matching for %s' % (packagetempdir,errors,))
+                return subject
             else:
                 raise EWaptNotSigned(u'The package %s does not contain a signature' % packagetempdir)
 
