@@ -20,7 +20,7 @@
 #    along with WAPT.  If not, see <http://www.gnu.org/licenses/>.
 #
 # -----------------------------------------------------------------------
-__version__ = "1.4.3"
+__version__ = "1.4.3.4"
 
 __all__ = [
     'control_to_dict',
@@ -262,7 +262,7 @@ class PackageEntry(object):
     # these attributes are not kept when duplicating / editing a package
     not_duplicated_attributes =  ['signature','signer','signer_fingerprint','signature_date']
 
-    manifest_filename_excludes = ['WAPT/signature','WAPT/manifest.sha1']
+    manifest_filename_excludes = ['WAPT/signature','WAPT/manifest.sha1','WAPT/signature.sha256','WAPT/manifest.sha256']
 
     @property
     def all_attributes(self):
@@ -719,10 +719,14 @@ class PackageEntry(object):
 
             if 'WAPT/manifest.sha1' in filenames:
                 waptzip.remove('WAPT/manifest.sha1')
+            if 'WAPT/manifest.sha256' in filenames:
+                waptzip.remove('WAPT/manifest.sha256')
             waptzip.writestr('WAPT/manifest.sha1',wapt_manifest)
 
             if 'WAPT/signature' in filenames:
                 waptzip.remove('WAPT/signature')
+            if 'WAPT/signature.sha256' in filenames:
+                waptzip.remove('WAPT/signature.sha256')
             waptzip.writestr('WAPT/signature',signature.encode('base64'))
 
         return signature.encode('base64')

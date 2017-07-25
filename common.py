@@ -187,7 +187,7 @@ def create_recursive_zip(zipfn, source_root, target_root = u"",excludes = [u'.sv
         source_item_fn = os.path.join(source_root, item)
         zip_item_fn = os.path.join(target_root,item)
         # exclude manifest and signature which are added afterward
-        if zip_item_fn in ('WAPT\\manifest.sha1','WAPT\\signature'):
+        if zip_item_fn in ('WAPT\\manifest.sha1','WAPT\\signature','WAPT\\manifest.sha256','WAPT\\signature.sha256'):
             continue
         if os.path.isfile(source_item_fn):
             if logger: logger.debug(u' adding file %s' % source_item_fn)
@@ -2929,7 +2929,7 @@ class Wapt(object):
                 errors.append(filename)
         files = setuphelpers.all_files(ensure_unicode(rootdir))
         # removes files which are not in manifest by design
-        for fn in ('WAPT/signature','WAPT/manifest.sha1'):
+        for fn in ('WAPT/signature','WAPT/manifest.sha1','WAPT/manifest.sha256','WAPT/signature.sha256'):
             full_fn = os.path.abspath(os.path.join(rootdir,fn))
             if full_fn in files:
                 files.remove(full_fn)
